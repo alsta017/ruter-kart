@@ -25,6 +25,12 @@ html, body {
     border-radius: 8px;
 }
 
+.selected-marker {
+    border: 2px solid lightblue;
+    margin: -2px;
+}
+
+
 .transport-icon {
     width: 24px;
     height: 24px;

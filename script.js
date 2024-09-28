@@ -2,7 +2,7 @@ let mapEl = document.getElementById("map");
 let stopInfoEl = document.getElementById("stop-info");
 
 // Create Leaflet map
-let map = L.map('map').setView([59.91, 10.75], 13);
+let map = L.map('map').setView([59.91, 10.75], 14);
 
 var markerGroup = L.layerGroup().addTo(map);
 
@@ -14,6 +14,7 @@ L.tileLayer('https://api.maptiler.com/maps/basic-v2-dark/{z}/{x}/{y}.png?key=0Ef
 
 let markers = {};
 let iconCache = {};
+let selectedMarker = null;
 
 function createCustomIcon(transportModes) {
     let key = transportModes.join('-');
@@ -77,6 +78,11 @@ async function updateStops() {
                 latitude
                 longitude
                 transportMode
+                quays {
+                    lines {
+                        publicCode
+                    }
+                }
             }
         }
         `
@@ -95,10 +101,18 @@ async function updateStops() {
         let data = await response.json();
         let newMarkers = {};
 
+        console.log(data)
+
         data.data.stopPlacesByBbox.forEach(stop => {
             if (!markers[stop.id]) {
                 let customIcon = createCustomIcon(stop.transportMode);
                 let marker = L.marker([stop.latitude, stop.longitude], { icon: customIcon }).addTo(markerGroup).on('click', () => {
+                    if (selectedMarker) {
+                        selectedMarker.getElement().querySelector('.custom-div').classList.remove('selected-marker');
+                    }
+                    marker.getElement().querySelector('.custom-div').classList.add('selected-marker');
+                    selectedMarker = marker;
+
                     stopInfoEl.innerHTML = `
                         <h3>${stop.name}</h3>
                         <p>Transport Modes: ${stop.transportMode.join(', ')}</p>
@@ -124,12 +138,16 @@ async function updateStops() {
     }
 }
 
-let debouncedUpdateStops = debounce(updateStops, 300);
+let debouncedUpdateStops = debounce(updateStops, 75);
 
 map.on('move', debouncedUpdateStops);
 map.on('zoom', debouncedUpdateStops);
 
 map.on('click', () => {
+    if (selectedMarker) {
+        selectedMarker.getElement().querySelector('.custom-div').classList.remove('selected-marker');
+        selectedMarker = null;
+    }
     stopInfoEl.style.display = 'none';
 });
 
