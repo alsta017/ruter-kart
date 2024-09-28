@@ -55,6 +55,11 @@ async function updateStops() {
     if (currentZoom < minZoom) {
         markerGroup.clearLayers();
         markers = {};
+        if (selectedMarker) {
+            selectedMarker.getElement().querySelector('.custom-div').classList.remove('selected-marker');
+            selectedMarker = null;
+            stopInfoEl.style.display = 'none';
+        }
         return;
     }
 
@@ -78,11 +83,6 @@ async function updateStops() {
                 latitude
                 longitude
                 transportMode
-                quays {
-                    lines {
-                        publicCode
-                    }
-                }
             }
         }
         `
@@ -100,8 +100,6 @@ async function updateStops() {
 
         let data = await response.json();
         let newMarkers = {};
-
-        console.log(data)
 
         data.data.stopPlacesByBbox.forEach(stop => {
             if (!markers[stop.id]) {
@@ -127,6 +125,11 @@ async function updateStops() {
 
         for (let id in markers) {
             if (!newMarkers[id]) {
+                if (selectedMarker && selectedMarker === markers[id]) {
+                    selectedMarker.getElement().querySelector('.custom-div').classList.remove('selected-marker');
+                    selectedMarker = null;
+                    stopInfoEl.style.display = 'none';
+                }
                 markerGroup.removeLayer(markers[id]);
             }
         }
