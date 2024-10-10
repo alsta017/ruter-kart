@@ -7,7 +7,7 @@ let map = L.map('map').setView([59.91, 10.75], 14);
 var markerGroup = L.layerGroup().addTo(map);
 
 // Add MapTiler tiles and correct attribution
-L.tileLayer('https://api.maptiler.com/maps/basic-v2-dark/{z}/{x}/{y}.png?key=0EfHAMqq8iHZOSlF3MU9', {
+L.tileLayer('https://api.maptiler.com/maps/26e8d7db-985a-4f4a-afb8-027e6cae2787/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors | <a href="https://maptiler.com/">© MapTiler</a><a href="https://www.openstreetmap.org/copyright">',
     maxZoom: 19
 }).addTo(map);
