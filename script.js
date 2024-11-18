@@ -54,23 +54,30 @@ function debounce(func, wait) {
 
 // Function to determine the background color based on line number
 function getLineColor(line, authorityName) {
-    const exceptions = ["100", "110", "130", "140", "145", "300"];
+
+    // FIX LINE 300E / LINJER SOM SLUTTER PÅ B OG N SOM ER OVER 100!
+    const exceptions = ["100", "110", "130", "140", "145", "300", "300E"];
+
+    const exceptionsGreen = ["210B", "215B", "370B", "545B" , "560N", "240N", "250N", "500N", "540N"];
 
     // Non-Ruter lines
     if (authorityName !== "Ruter") {
         return "#9799a3"; // Gray for non-Ruter lines
     }
 
-    // Check for night and replacement buses
-    if (line.endsWith("N") || line.endsWith("B")) {
-        return "#e60000"; // Red for night or replacement buses
-    }
-
-    // Check for exceptions
     if (exceptions.includes(line)) {
         return "#e60000"; // Red for exceptions
     }
 
+    if (exceptionsGreen.includes(line)) {
+        return "#75a300"; // Green for exceptions
+    }
+
+    // Check for night and replacement buses
+    if (line.endsWith("N") || line.endsWith("B")) {
+        return "#e60000"; // Red for night or replacement buses
+    }
+    
     // Determine color based on line number range
     const lineNumber = parseInt(line, 10);
 
